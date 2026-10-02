@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fieldmate — your local assistant</title>
+    <link rel="icon" href="/static/favicon.svg" />
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <span data-icon="chat"></span><strong>fieldmate</strong
+          ><button
+            id="collapse-sidebar"
+            class="icon-button"
+            aria-label="Collapse sidebar"
+            title="Collapse sidebar"
+            data-icon="panel"
+          ></button>
+        </div>
+        <button class="new-thread" id="new-thread">
+          <span data-icon="plus"></span>New thread
+        </button>
+        <div class="thread-heading">YOUR CONVERSATIONS</div>
+        <nav
+          id="thread-list"
+          class="thread-list"
+          aria-label="Conversations"
+        ></nav>
+        <div class="sidebar-bottom">
+          <div id="connection" class="connection">
+            <i></i>Connecting locally…
+          </div>
+          <button id="settings" class="sidebar-settings">
+            <span data-icon="settings"></span>Settings<span class="key-hint"
+              >Local</span
+            >
+          </button>
+        </div>
+      </aside>
+      <main>
+        <header class="topbar">
+          <button
+            id="open-sidebar"
+            class="icon-button"
+            aria-label="Toggle sidebar"
+            data-icon="panel"
+          ></button>
+          <div class="thread-title" id="thread-title">New chat</div>
+          <nav class="tabs" aria-label="Main navigation">
+            <button data-view="chat" class="active">Chat</button
+            ><button data-view="documents">
+              Documents<span id="doc-count" class="count">0</span>
+            </button>
+          </nav>
+          <button
+            id="notebook"
+            class="icon-button"
+            title="Notes and tasks"
+            aria-label="Notes and tasks"
+            data-icon="note"
+          ></button
+          ><button
+            id="thread-options"
+            class="icon-button"
+            title="Conversation settings"
+            aria-label="Conversation settings"
+            data-icon="more"
+          ></button>
+        </header>
+        <section id="chat-view" class="view chat-view empty">
+          <div
+            id="conversation"
+            class="conversation"
+            aria-live="polite"
+            aria-relevant="additions"
+          ></div>
+          <div class="welcome" id="welcome">
+            <h1>How can I help you today?</h1>
+            <p>A thought, a question, or something to remember.</p>
+          </div>
+          <div class="compose-area">
+            <div class="closed-banner hidden" id="closed-banner">
+              This conversation is closed.<button id="reopen-thread">
+                Reopen conversation
+              </button>
+            </div>
+            <form id="chat-form" class="composer">
+              <label for="message" class="sr-only">Message Fieldmate</label
+              ><textarea
+                id="message"
+                placeholder="Send a message…"
+                rows="2"
+                maxlength="6000"
+              ></textarea>
+              <div class="composer-tools">
+                <button
+                  type="button"
+                  id="attach"
+                  class="icon-button"
+                  title="Manage documents"
+                  aria-label="Manage documents"
+                  data-icon="plus"
+                ></button
+                ><label class="select-wrap model-wrap"
+                  ><span data-icon="spark"></span
+                  ><select id="model" aria-label="Chat model"></select></label
+                ><label class="select-wrap category-wrap"
+                  ><select
+                    id="category"
+                    aria-label="Conversation category"
+                  ></select
+                ></label>
+                <div class="tool-spacer"></div>
+                <button
+                  type="button"
+                  id="web-toggle"
+                  class="icon-button"
+                  title="Request a web search (asks before sending)"
+                  aria-label="Request a web search"
+                  aria-pressed="false"
+                  data-icon="globe"
+                ></button
+                ><button
+                  type="button"
+                  id="record"
+                  class="icon-button"
+                  aria-label="Record a voice message"
+                  title="Record a voice message"
+                  data-icon="mic"
+                ></button
+                ><button
+                  id="send"
+                  class="send-button"
+                  aria-label="Send message"
+                  data-icon="arrow"
+                ></button>
+              </div>
+            </form>
+            <div id="suggestions" class="suggestions">
+              <button data-prompt="Explain a concept from my documents">
+                Ask my documents</button
+              ><button data-prompt="Save a note: ">Save a quick note</button
+              ><button data-prompt="Add a task: ">Plan a follow-up</button
+              ><button data-prompt="Explain how photosynthesis works">
+                Learn something new
+              </button>
+            </div>
+            <div class="voice-toolbar">
+              <button id="handsfree">
+                <span data-icon="headphones"></span>Start hands-free session</button
+              ><label
+                ><input type="checkbox" id="read-aloud" />Read replies
+                aloud</label
+              ><button id="stop-speaking" class="hidden">Stop speaking</button>
+            </div>
+            <div id="voice-state" class="footnote">
+              On your laptop. Web searches always ask first.
+            </div>
+          </div>
+        </section>
+        <section id="documents-view" class="view documents-view hidden">
+          <div class="page-heading">
+            <div>
+              <div class="eyebrow">YOUR KNOWLEDGE</div>
+              <h1>Documents</h1>
+              <p>Give your assistant something to refer to.</p>
+            </div>
+            <button id="upload-button" class="primary">
+              <span data-icon="plus"></span>Add documents</button
+            ><input
+              id="file-input"
+              type="file"
+              accept=".pdf,.md,.txt"
+              multiple
+              hidden
+            />
+          </div>
+          <div class="document-controls">
+            <span id="document-total">0 documents</span
+            ><select
+              id="document-filter"
+              aria-label="Filter documents by category"
+            >
+              <option value="">All categories</option>
+            </select>
+          </div>
+          <div id="upload-progress" class="notice hidden" role="status"></div>
+          <div id="document-list"></div>
+          <p class="footnote document-footnote">
+            PDF, Markdown, or TXT · up to 20 MB per file · indexed and stored
+            locally<br />Shared documents are available in every category.
+            Category documents stay within that subject.
+          </p>
+        </section>
+      </main>
+    </div>
+    <dialog id="settings-dialog">
+      <div class="dialog-header">
+        <h2>Settings</h2>
+        <button
+          class="icon-button"
+          data-close="settings-dialog"
+          aria-label="Close settings"
+        >
+          ×
+        </button>
+      </div>
+      <nav class="settings-tabs">
+        <button data-settings="general" class="active">Assistant</button
+        ><button data-settings="thread">This conversation</button
+        ><button data-settings="categories">Categories</button>
+      </nav>
+      <form id="general-settings" class="settings-pane">
+        <label>Default chat model<select id="default-model"></select></label>
+        <p class="field-help">
+          Applies to new threads. Switch the current model in the chat composer.
+        </p>
+        <label
+          >Assistant instructions<textarea
+            id="system-prompt"
+            rows="8"
+            maxlength="8000"
+          ></textarea></label
+        ><button type="button" id="restore-prompt" class="text-button">
+          Restore recommended prompt
+        </button>
+        <div class="form-grid">
+          <label
+            >Internet search<select id="web-mode">
+              <option value="ask">Ask before every search</option>
+              <option value="off">Disabled — stay offline</option>
+            </select></label
+          ><label
+            >Clarification engine<select id="decision-engine">
+              <option value="laya">Laya + Ollama</option>
+              <option value="ollama">Ollama only</option>
+            </select></label
+          >
+        </div>
+        <p id="decision-status" class="field-help"></p>
+        <div id="setup-status" class="setup-status"></div>
+        <div class="dialog-footer">
+          <span id="settings-feedback" role="status"></span
+          ><button class="primary">Save settings</button>
+        </div>
+      </form>
+      <form id="thread-settings" class="settings-pane hidden">
+        <label
+          >Conversation name<input
+            id="edit-title"
+            maxlength="100"
+            required /></label
+        ><label>Category<select id="edit-category"></select></label
+        ><label
+          >Instructions for this conversation<textarea
+            id="thread-prompt"
+            rows="5"
+            maxlength="4000"
+            placeholder="e.g. Explain things at a beginner level and use short examples."
+          ></textarea></label
+        ><label
+          >Site or project (optional)<input
+            id="thread-site"
+            maxlength="100"
+            placeholder="Used to organize saved notes and tasks"
+        /></label>
+        <p class="field-help">
+          History stays with this thread, even when you change its model or
+          category. Start a new thread for a fresh context.
+        </p>
+        <div class="dialog-footer">
+          <button id="close-thread" type="button" class="secondary">
+            Close conversation</button
+          ><button class="primary">Save conversation</button>
+        </div>
+      </form>
+      <form id="category-settings" class="settings-pane hidden">
+        <label>Category<select id="manage-category"></select></label
+        ><label>Name<input id="category-name" maxlength="50" required /></label
+        ><label
+          >Subject instructions<textarea
+            id="category-prompt"
+            rows="6"
+            maxlength="3000"
+            placeholder="How should Fieldmate help with this subject?"
+          ></textarea>
+        </label>
+        <p class="field-help">
+          These instructions apply to conversations using this category,
+          alongside your assistant instructions.
+        </p>
+        <div class="dialog-footer">
+          <button id="new-category" type="button" class="secondary">
+            New category</button
+          ><button class="primary">Save category</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="document-dialog" class="wide-dialog">
+      <div class="dialog-header">
+        <h2 id="dialog-title"></h2>
+        <button
+          class="icon-button"
+          data-close="document-dialog"
+          aria-label="Close document"
+        >
+          ×
+        </button>
+      </div>
+      <div id="dialog-content" class="document-content"></div>
+    </dialog>
+    <dialog id="notebook-dialog">
+      <div class="dialog-header">
+        <h2>Notes & tasks</h2>
+        <button
+          class="icon-button"
+          data-close="notebook-dialog"
+          aria-label="Close notebook"
+        >
+          ×
+        </button>
+      </div>
+      <p class="field-help">
+        Ask Fieldmate to save a note or add a task. All saved items live on this
+        laptop.
+      </p>
+      <div id="notebook-content"></div>
+      <div class="dialog-footer">
+        <a href="/api/export" download>Export notebook ↓</a>
+      </div>
+    </dialog>
+    <div id="toast" class="toast hidden" role="status"></div>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

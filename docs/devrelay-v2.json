@@ -1,0 +1,68 @@
+{
+  "title": "Fieldmate v2: contextual local assistant, categories and permission-gated web search",
+  "tool_name": "codex",
+  "curated_data": {
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "Update the laptop assistant with a simple dark chat interface, a Documents tab, multiple threads, subject categories, custom prompts, contextual conversations, permission-based web search, document cross-checking, and a Laya-like clarification engine. Support switching Ollama models, including Gemma 4."
+          }
+        ]
+      },
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Curated build summary: migrated existing SQLite exchanges into a legacy conversation; added isolated thread histories, rolling summaries, categories, prompts, and per-thread models. Separated conversation memory from document retrieval. The interface has Chat and Documents tabs plus settings and a notebook."
+          }
+        ]
+      },
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Integrated the open Laya typed-decision checkpoint as an advisory local ambiguity signal. A real test showed its answer hint could encourage an overly general response when medicine names were missing. Added deterministic missing-reference clarification for that case. Ollama handles nuanced context and question wording. No confidence score is treated as calibrated."
+          }
+        ]
+      },
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Added exact-source quotation checks around natural-language answers. Replies distinguish model knowledge, document sources, mixed evidence, and uncertainty. Exact quotation provenance is not a guarantee that generated claims are correct. Web search requires an editable query and single-use server-side approval bound to its conversation. Only the approved query is sent to DuckDuckGo; failures are explicit."
+          }
+        ]
+      },
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Validation: 31 automated tests passed, including thread isolation, migration, compaction, categories, atomic notes/tasks, fabricated citation rejection, single-use search approval, and rejection of remote model tags. Real offline checks passed with Qwen3, Gemma4 e2b, Laya, Nomic embeddings, and a Piper-to-Whisper audio round trip. Switching from Qwen to Gemma preserved a photosynthesis conversation. A public documentation query returned live search results. The installed app retains the user's existing records and a pre-migration SQLite backup."
+          }
+        ]
+      },
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Open innovation enables local inference and private document handling without recurring cloud inference fees, replaceable chat models, inspectable routing, and offline speech. Limitations: bounded/summarized context, heuristic retrieval and clarification, search snippets rather than full web pages, and turn-taking voice rather than full duplex. This is a curated summary, not a raw transcript. Private paths, existing user conversation content, and credentials have been excluded."
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "tool_name": "codex",
+      "curated": true,
+      "milestone": "Fieldmate v2",
+      "total_messages": 6
+    }
+  }
+}

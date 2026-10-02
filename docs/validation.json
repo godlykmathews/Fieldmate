@@ -1,0 +1,44 @@
+{
+  "passed": true,
+  "outbound_connections": "blocked during test; loopback Ollama allowed",
+  "seconds": 32.63,
+  "tests": [
+    {
+      "test": "What should I include in a visit handover?",
+      "passed": true,
+      "grounded": true,
+      "sources": 4,
+      "seconds": 14.63
+    },
+    {
+      "test": "How should I name site photographs?",
+      "passed": true,
+      "grounded": true,
+      "sources": 4,
+      "seconds": 16.16
+    },
+    {
+      "test": "What is the pump torque limit in newton meters?",
+      "passed": true,
+      "grounded": false,
+      "sources": 0,
+      "seconds": 0.03
+    },
+    {
+      "test": "Who won the 2022 football world cup?",
+      "passed": true,
+      "grounded": false,
+      "sources": 0,
+      "seconds": 0.02
+    },
+    {
+      "test": "Persistent commands and retry",
+      "passed": true
+    },
+    {
+      "test": "Piper to Whisper audio round trip",
+      "passed": true,
+      "text": "Save a note, the site identifier is unreadable."
+    }
+  ]
+}

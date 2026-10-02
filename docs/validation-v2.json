@@ -1,0 +1,76 @@
+{
+  "passed": true,
+  "seconds": 93.3,
+  "outbound_connections": "Python socket connects blocked; loopback Ollama allowed",
+  "tests": [
+    {
+      "test": "I am learning photosynthesis. Explain it in two sentences.",
+      "passed": true,
+      "seconds": 38.82,
+      "text": "Photosynthesis is the process by which plants, algae, and some bacteria convert light energy into chemical energy, using carbon dioxide and water to produce glucose and oxygen. This process occurs primarily in the chloroplasts of plant cells and is essential for life on Earth as it forms the base of the food chain and produces oxygen.",
+      "model": "qwen3:8b",
+      "basis": "knowledge",
+      "decision": {
+        "engine": "Laya",
+        "clarification_hint": true
+      }
+    },
+    {
+      "test": "Why does it need light?",
+      "passed": true,
+      "seconds": 9.42,
+      "text": "Plants need light because it provides the necessary energy to power the entire photosynthetic process. Light energy is captured by chlorophyll, which is the pigment that allows plants to convert light into chemical energy.",
+      "model": "gemma4:e2b",
+      "basis": "knowledge",
+      "decision": {
+        "engine": "Laya",
+        "clarification_hint": false
+      }
+    },
+    {
+      "test": "Can I take it with my other medicine?",
+      "passed": true,
+      "seconds": 0.48,
+      "text": "Which medicines do you mean? Please tell me the names of both.",
+      "model": "qwen3:8b",
+      "basis": "clarification",
+      "decision": {
+        "engine": "Laya",
+        "clarification_hint": false
+      }
+    },
+    {
+      "test": "What should I include in a visit handover?",
+      "passed": true,
+      "seconds": 28.34,
+      "text": "A visit handover should include the site name, date, purpose of the visit, observations, unresolved questions, and open tasks. Include who owns each follow-up and the agreed due date if one was given. Mark the handover as a draft until you have checked it.",
+      "model": "qwen3:8b",
+      "basis": "mixed",
+      "decision": {
+        "engine": "Laya",
+        "clarification_hint": false
+      }
+    },
+    {
+      "test": "According to the guide, what is the pump torque limit in newton meters?",
+      "passed": true,
+      "seconds": 11.49,
+      "text": "The document does not provide information about pump torque limits. It is a fictional guide and not a real technical procedure or safety instruction.",
+      "model": "qwen3:8b",
+      "basis": "knowledge",
+      "decision": {
+        "engine": "Laya",
+        "clarification_hint": true
+      }
+    },
+    {
+      "test": "Captures, retries, permission without outbound search",
+      "passed": true
+    },
+    {
+      "test": "Piper to Whisper round trip",
+      "passed": true,
+      "text": "Save a note, the site identifier is unreadable."
+    }
+  ]
+}
