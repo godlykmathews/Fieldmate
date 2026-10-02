@@ -36,3 +36,15 @@ The author warns that an answer can have citations without being supported by th
 Primary references: [Laya API and checkpoint documentation](https://github.com/NandhaKishorM/laya), [Ollama structured outputs](https://docs.ollama.com/capabilities/structured-outputs), [DDGS explicit search backends](https://github.com/deedy5/ddgs).
 
 Laya proposes an ambiguity signal; deterministic rules handle clear missing references and the local generator resolves nuanced context. The generator never grants itself search approval. Exact excerpt matching validates quotation provenance, not the factual correctness of the generated prose.
+
+## Contextual note and task capture
+
+### 🌐 Community Wisdom: [Smaller Context, Recoverable History: Inside an Agent Memory Handoff](https://dev.to/badbat4560/smaller-context-recoverable-history-inside-an-agent-memory-handoff-404j)
+> **Source**: [badbat4560](https://dev.to/badbat4560)
+> **Tags**: `agents`, `ai`, `architecture`, `llm`
+>
+> The author distinguishes compact working context from recoverable exact source text. Their limited synthetic benchmark does not establish universally lossless memory. A commenter supports preserving exact tool records separately from summaries. For Fieldmate, this supports resolving captures to stored thread messages rather than asking the model to reconstruct a plan from its summary. Whole-message selection uses constrained source IDs; the server copies the original content.
+>
+> 🔗 [Read Full Discussion](https://dev.to/badbat4560/smaller-context-recoverable-history-inside-an-agent-memory-handoff-404j)
+
+Counter-position: [Agent Memory's Real Failure Is Currency, Not Retrieval](https://dev.to/madebyexpert/agent-memorys-real-failure-is-currency-not-retrieval-40h9) argues that retrieval can still return stale facts. No comments were returned when checked. Fieldmate's selector receives chronological candidates and instructions to prefer the latest revision of the requested subject; this is not a guarantee of perfect semantic selection. Missing, invented, or invalid references do not cause writes.

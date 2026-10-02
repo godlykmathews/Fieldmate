@@ -13,6 +13,7 @@ from fieldmate.store import Store
 class Model:
     def __init__(self):
         self.calls = []
+        self.capture = {"fragments": [], "clarification": "Which plan should I save?"}
         self.route = "answer"
         self.answer = {
             "text": "Photosynthesis converts light into chemical energy.",
@@ -33,6 +34,8 @@ class Model:
             return {"summary": "The project is Cedar. The latest correction is blue."}
         if schema["title"] == "Intent":
             return {"action": "question", "text": "contextual question"}
+        if schema["title"] == "CaptureSelection":
+            return self.capture
         return self.answer
 
 

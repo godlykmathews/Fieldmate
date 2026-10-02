@@ -6,11 +6,17 @@ from typing import Literal
 
 from pydantic import BaseModel, Field, ValidationError
 
+from .capture import capture_reference
+
 
 class Intent(BaseModel):
     action: Literal["question", "save_note", "create_task", "list_tasks", "search_notes"]
     text: str = Field(min_length=1, max_length=6000)
     due_date: str | None = None
+    reference: bool = Field(
+        default=False,
+        description="True when note/task content refers to earlier conversation, rather than new literal content.",
+    )
 
 
 class Quote(BaseModel):
@@ -46,20 +52,37 @@ class Assistant:
 
     def classify(self, text, history, model=None, resolve_followups=True):
         # Explicit capture commands are fast and preserve the user's exact wording.
+        text = re.sub(r"^please\s+", "", text.strip(), flags=re.I)
+        capture = re.fullmatch(
+            r"(?:save|store|record|capture|add|make)\s+(.+?)\s+(?:as|into)\s+(?:a\s+)?(note|task|todo)[.!?]*",
+            text,
+            re.I | re.S,
+        )
+        capture_action = None
+        if capture:
+            body, kind = capture.groups()
+            capture_action = "save_note" if kind.lower() == "note" else "create_task"
+            if capture_reference(body):
+                return Intent(action=capture_action, text=body.strip(), reference=True)
+        capture = re.fullmatch(r"(?:save|remember|record|capture|write down)\s+(.+?)[.!?]*", text, re.I | re.S)
+        if capture and capture_reference(capture.group(1)):
+            return Intent(action="save_note", text=capture.group(1).strip(), reference=True)
         note = re.match(
             r"^(?:save\s+(?:a\s+)?note|make\s+(?:a\s+)?note|take\s+(?:a\s+)?note|note)\s*(?:[:,.-]\s*|\s+)(.+)$",
             text,
             re.I | re.S,
         )
         if note:
-            return Intent(action="save_note", text=note.group(1).strip())
+            body = note.group(1).strip()
+            return Intent(action="save_note", text=body, reference=capture_reference(body))
         task = re.match(
             r"^(?:add\s+(?:a\s+)?(?:task|todo)|create\s+(?:a\s+)?task|remind\s+me\s+to|todo)\s*(?:[:,.-]\s*|\s+)(.+)$",
             text,
             re.I | re.S,
         )
         if task:
-            return Intent(action="create_task", text=task.group(1).strip())
+            body = task.group(1).strip()
+            return Intent(action="create_task", text=body, reference=capture_reference(body))
         if re.match(
             r"^(?:show|list|what are|read)\s+(?:me\s+)?(?:my\s+)?(?:open\s+)?(?:tasks|todos)\b", text, re.I
         ):
@@ -69,6 +92,8 @@ class Assistant:
         # A model may confuse a guide about observations with the user's saved observations.
         # Gate memory/actions on the actual request, and route normal questions straight to retrieval.
         allowed = {"question"}
+        if capture_action:
+            allowed.add(capture_action)
         if re.match(r"^(?:please\s+)?(?:remember|record|log|capture|write|save|make|take)\b", text, re.I):
             allowed.add("save_note")
         if re.match(r"^(?:please\s+)?(?:remind|add|create|schedule|set)\b", text, re.I):
@@ -93,8 +118,11 @@ class Assistant:
             "You route requests for an offline field assistant. Return the supplied JSON schema. "
             "question: work knowledge questions, greetings, and requests to explain. Rewrite text into a "
             "standalone search question using conversation context ONLY if needed. "
-            "save_note: only explicit requests to save observations; preserve their wording. "
-            "create_task: only explicit requests to create a todo; preserve title and time wording. "
+            "save_note: only explicit requests to save notes. create_task: only explicit requests to create a todo. "
+            "For literal new content preserve the user's wording and set reference=false. "
+            "For 'save this', 'save our study plan', 'remind me to do that', or other references to "
+            "earlier conversation, set reference=true and text to the reference phrase. "
+            "Do NOT invent or summarize the referenced content; a separate tool retrieves the original text. "
             "list_tasks: requests to see saved todos. search_notes: requests to read personal observations; "
             "text is a short literal search phrase or '*' to list all. Never turn a question into a write. "
             "due_date must be null unless explicitly requested; ISO YYYY-MM-DD if unambiguous. "

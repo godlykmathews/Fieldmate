@@ -8,6 +8,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from .assistant import Assistant, Quote, due_from_text, normalize
+from .capture import resolve_capture
 from .decision import DecisionEngine
 from .ollama import ModelError
 from .text import plain_text
@@ -265,17 +266,27 @@ Be concise. Use plain text with short paragraphs. Do not use Markdown: no asteri
             )
             base = {"sources": [], "grounded": False, "model": model, "basis": "action"}
             if intent and intent.action in {"save_note", "create_task"}:
+                capture = resolve_capture(
+                    intent, text, self.store.history(thread_id=thread_id), self.ollama, model
+                )
+                if capture.clarification:
+                    response = base | {
+                        "action": "clarify", "basis": "clarification", "text": capture.clarification,
+                    }
+                    self.store.save_exchange(request_id, payload, response, thread_id=thread_id)
+                    return response
                 due = due_from_text(text, intent.due_date) if intent.action == "create_task" else None
+                base["capture_sources"] = capture.sources
                 with self.store.connect() as db:
                     if intent.action == "save_note":
-                        item = self.store.add_note(intent.text, site, db=db)
+                        item = self.store.add_note(capture.text, site, db=db)
                         response = base | {
                             "text": "Note saved: " + item["text"],
                             "action": "save_note",
                             "item": item,
                         }
                     else:
-                        item = self.store.add_task(intent.text, site, due, db=db)
+                        item = self.store.add_task(capture.text, site, due, db=db)
                         response = base | {
                             "text": "Task added: " + item["title"] + (f"\nDue {due}." if due else ""),
                             "action": "create_task",
