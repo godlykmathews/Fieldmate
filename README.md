@@ -1,4 +1,4 @@
-# Fieldmate
+# Field Assistant
 
 A local laptop assistant with voice, persistent conversations, subject categories, document retrieval, notes, tasks, and optional permission-based web search. Its simple dark interface has **Chat** and **Documents** tabs.
 
